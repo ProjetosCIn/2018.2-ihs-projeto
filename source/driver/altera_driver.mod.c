@@ -22,13 +22,13 @@ __attribute__((section("__versions"))) = {
 	{ 0x6bc3fbc0, "__unregister_chrdev" },
 	{ 0x926bdeb2, "__pci_register_driver" },
 	{ 0xd224f665, "__register_chrdev" },
+	{ 0xc3aaf0a9, "__put_user_1" },
+	{ 0xa1c76e0a, "_cond_resched" },
+	{ 0xe484e35f, "ioread32" },
 	{ 0x3af98f9e, "ioremap_nocache" },
 	{ 0xef237555, "pci_bus_read_config_dword" },
 	{ 0xecf47114, "pci_bus_read_config_byte" },
 	{ 0xf9e546fe, "pci_enable_device" },
-	{ 0xc3aaf0a9, "__put_user_1" },
-	{ 0xa1c76e0a, "_cond_resched" },
-	{ 0xc5534d64, "ioread16" },
 	{ 0x436c2179, "iowrite32" },
 	{ 0xedc03953, "iounmap" },
 	{ 0x50eedeb8, "printk" },
@@ -42,4 +42,4 @@ __attribute__((section(".modinfo"))) =
 
 MODULE_ALIAS("pci:v00001172d00000004sv*sd*bc*sc*i*");
 
-MODULE_INFO(srcversion, "B30C6EA04EC09C29C3FE5EB");
+MODULE_INFO(srcversion, "E9DA4E9AEE5A829EBA7C275");

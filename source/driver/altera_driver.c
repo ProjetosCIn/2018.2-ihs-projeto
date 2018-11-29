@@ -5,6 +5,14 @@
 #include <linux/fs.h>
 #include <asm/uaccess.h>
 
+#define BUTTON 1
+#define LED_G 2
+#define LED_R 3
+#define INPORT 4
+#define HEXPORT 5
+#define HEXDISPLAY_1 6
+
+
 MODULE_LICENSE("Dual BSD/GPL");
 MODULE_DESCRIPTION("Basic Driver PCIHello");
 MODULE_AUTHOR("Patrick Schaumont");
@@ -13,6 +21,10 @@ MODULE_AUTHOR("Patrick Schaumont");
 
 static void *hexport;  // handle to 32-bit output PIO
 static void *inport;   // handle to 16-bit input PIO
+static void *button;   
+static void *led_g;
+static void *led_r;
+static void *hexdisplay_1;
 
 //-- Char Driver Interface
 static int   access_count =  0;
@@ -42,29 +54,64 @@ static int char_device_release(struct inode *inodep, struct file *filep) {
 }
 
 static ssize_t char_device_read(struct file *filep, char *buf, size_t len, loff_t *off) {
-  long int switches;
-
-  //  printk(KERN_ALERT "altera_driver: read %d bytes\n", len);
-    switches = ioread32(inport);
-    put_user(switches & 0xFF, buf++);
-    put_user((switches >> 8) & 0xFF, buf++);
-    put_user((switches >> 16) & 0xFF, buf++);
-    put_user((switches >> 24) & 0xFF, buf++);
+  
+  long int buttonData, switchesData;
+  size_t count = len;
+  switch(len){
+    case(BUTTON):
+      // Leitura do Botao
+      buttonData = ioread32(button);
+      put_user(buttonData & 0xFF, buf++);
+      put_user((buttonData >> 8) & 0xFF, buf++);
+      put_user((buttonData >> 16) & 0xFF, buf++);
+      put_user((buttonData >> 24) & 0xFF, buf++);
+      break;
+    case(INPORT):
+      switchesData = ioread32(inport);
+      put_user(switchesData & 0xFF, buf++);
+      put_user((switchesData >> 8) & 0xFF, buf++);
+      put_user((switchesData >> 16) & 0xFF, buf++);
+      put_user((switchesData >> 24) & 0xFF, buf++);
+      break;
+    default:
+      break;
+  }
+    
   return count;
 }
 
 static ssize_t char_device_write(struct file *filep, const char *buf, size_t len, loff_t *off) {
   char *ptr = (char *) buf;
   size_t count = len;
+
+  unsigned k = *((int *) ptr);//pega o valo ptr
+
+  switch(len){
+    case(LED_G):
+      iowrite32(k, led_g);
+      break;
+    case(LED_R):
+      iowrite32(k, led_r);
+      break;
+    case(HEXPORT):
+      iowrite32(k, hexport);
+      break;
+    case(HEXDISPLAY_1):
+      iowrite32(k, hexdisplay_1);
+      break;
+    default:
+      break;
+  }
+
 //  short b = 0;
   //  printk(KERN_ALERT "altera_driver: write %d bytes\n", len);
   //while (b <  len) {
-    unsigned k = *((int *) ptr);//pega o valo ptr
-//    ptr += 4;//
+    
+    //    ptr += 4;//
     //b   += 4;
-    iowrite32(k, hexport);
+    
   //}
-  return count;
+  return k;
 }
 
 //-- PCI Device Interface
@@ -110,15 +157,24 @@ static int pci_probe(struct pci_dev *dev, const struct pci_device_id *id) {
   resource = pci_resource_start(dev, 0);
   printk(KERN_ALERT "altera_driver: Resource start at bar 0: %lx\n", resource);
 
-  hexport = ioremap_nocache(resource + 0XC000, 0x20);
+  hexport = ioremap_nocache(resource + 0XC200, 0x20);
   inport  = ioremap_nocache(resource + 0XC020, 0x20);
+  button  = ioremap_nocache(resource + 0XC150, 0x20);
+  led_g = ioremap_nocache(resource + 0XC060, 0x20);
+  led_r = ioremap_nocache(resource + 0XC250, 0x20);
+  hexdisplay_1 = ioremap_nocache(resource + 0XC040, 0x20);
 
   return 0;
 }
 
+
 static void pci_remove(struct pci_dev *dev) {
   iounmap(hexport);
   iounmap(inport);
+  iounmap(button);
+  iounmap(led_g);
+  iounmap(led_r);
+  iounmap(hexdisplay_1);
 }
 
 
