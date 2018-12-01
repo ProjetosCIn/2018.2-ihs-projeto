@@ -57,25 +57,21 @@ static ssize_t char_device_read(struct file *filep, char *buf, size_t len, loff_
   
   long int buttonData, switchesData;
   size_t count = len;
-  switch(len){
-    case(BUTTON):
-      // Leitura do Botao
-      buttonData = ioread32(button);
+  if(len == BUTTON){
+  	buttonData = ioread32(button);
       put_user(buttonData & 0xFF, buf++);
       put_user((buttonData >> 8) & 0xFF, buf++);
       put_user((buttonData >> 16) & 0xFF, buf++);
       put_user((buttonData >> 24) & 0xFF, buf++);
-      break;
-    case(INPORT):
-      switchesData = ioread32(inport);
+  
+  }else if(len == INPORT){
+  	 switchesData = ioread32(inport);
       put_user(switchesData & 0xFF, buf++);
       put_user((switchesData >> 8) & 0xFF, buf++);
       put_user((switchesData >> 16) & 0xFF, buf++);
       put_user((switchesData >> 24) & 0xFF, buf++);
-      break;
-    default:
-      break;
   }
+  
     
   return count;
 }
@@ -159,10 +155,10 @@ static int pci_probe(struct pci_dev *dev, const struct pci_device_id *id) {
 
   hexport = ioremap_nocache(resource + 0XC200, 0x20);
   inport  = ioremap_nocache(resource + 0XC020, 0x20);
-  button  = ioremap_nocache(resource + 0XC150, 0x20);
+  button  = ioremap_nocache(resource + 0XC700, 0x20);
   led_g = ioremap_nocache(resource + 0XC060, 0x20);
   led_r = ioremap_nocache(resource + 0XC250, 0x20);
-  hexdisplay_1 = ioremap_nocache(resource + 0XC040, 0x20);
+  // hexdisplay_1 = ioremap_nocache(resource + 0XC040, 0x20);
 
   return 0;
 }
@@ -174,7 +170,7 @@ static void pci_remove(struct pci_dev *dev) {
   iounmap(button);
   iounmap(led_g);
   iounmap(led_r);
-  iounmap(hexdisplay_1);
+  // iounmap(hexdisplay_1);
 }
 
 

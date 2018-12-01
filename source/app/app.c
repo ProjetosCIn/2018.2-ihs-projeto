@@ -16,33 +16,53 @@ unsigned char hexdigit[] = {0x3F, 0x06, 0x5B, 0x4F,
 			                      0x39, 0x5E, 0x79, 0x71};
 
 
+long int readButton(int dev){
+  long int vButton;
+  read(dev, &vButton, BUTTON);
+  read(dev, &vButton, BUTTON);
+  return vButton;
+}
+
+long int readInport(int dev){
+  long int vInport;
+  read(dev, &vInport, INPORT);
+  read(dev, &vInport, INPORT);
+  return vInport;
+}
+
 
 int main() {
-  long int i, j = 2, k;
-
+  long int i, vInport,vButton, k, l;
+  
   int dev = open("/dev/de2i150_altera", O_RDWR);
-  for (i=0; i>-1; i++) {
+  
 
-  	// printf("Antes %ld     ",j );
-    int a = read(dev, &j, BUTTON);
-    //printf("%ld",j);
-     printf("Antes Depois %ld\n",j );
-    k = hexdigit[j & 0xF]
-      | (hexdigit[(j >>  4) & 0xF] << 8)
-      | (hexdigit[(j >>  8) & 0xF] << 16)
-      | (hexdigit[(j >> 12) & 0xF] << 24);
-    k = ~k;
-
-    // write(dev, &j, LED_R);
-    write(dev, &k, HEXPORT);
-
-    //k = valueBin[j];
-    // printf("Depois %ld     ",j );
+  while(1){
+    vInport = readInport(dev);
     
-    // printf("Depois Depois %ld     \n",j );
-  }
+    
+    printf("leitura inport %ld | \n",vInport );
+    
+    
+
+    // read(dev, &vButton, BUTTON);
+    // read(dev, &vButton, BUTTON);
+    // printf("leitura butao %ld\n",vButton );
+
+    k = hexdigit[vInport & 0xF]
+      | (hexdigit[(vInport >>  4) & 0xF] << 8)
+      | (hexdigit[(vInport >>  8) & 0xF] << 16)
+      | (hexdigit[(vInport >> 12) & 0xF] << 24);
+    k = ~k;
+    write(dev, &vInport, LED_R);
+
+
+  }     
+    
+
 
   close(dev);
+  
   return 0;
 }
 
