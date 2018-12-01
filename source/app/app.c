@@ -4,6 +4,17 @@
 #include <math.h>
 #include <omp.h>
 
+
+
+#include <sys/time.h>
+
+long long current_timestamp() {
+    struct timeval te; 
+    gettimeofday(&te, NULL); // get current time
+    long long milliseconds = te.tv_sec*1000LL + te.tv_usec/1000; // calculate milliseconds
+    return milliseconds;
+}
+
 // #include "../biblioMapping.h"
 
 #define BUTTON 1
@@ -81,30 +92,150 @@ int main() {
 void maquinaEstados(int dev){
   int lixo = 0, k;
   int estado = 0;
+  long long tempoAntigo,tempoAtual, diferencaTempo = 0;
+  // char buffer[5];
+  char vazio[5] = {' ',' ',' ',' ',' '};
+  // int posBuffer;
+  char frase[250];
+  int indiceFrase = 0;
+  char atual = 'a';
+  int i;
+  int contador = 0;
+
   while(1){
-    
+      // printf("Estado: %d\n", estado);
+      // printf("%d\n", botoes[0] );
       switch(estado){
         case 0:
           if(switches[0] == 1)
+            printf("\n");
             estado = 1;
-
+          if(botoes[1] == 1){
+            printf("Enviamos essa frase: |||%s|||\n",frase );
+          }
           break;
         case 1:
-            
+          if(botoes[0]==1){
+            estado = 2;
+            tempoAntigo = current_timestamp();
+          }
+          else if(switches[0]==0){
+            estado = 0;
+          }
+          break;
+        case 2:
+          if(switches[0]==0){
+            estado = 0;
+          }
+          if(botoes[0]==0){
+            tempoAtual=current_timestamp();
+            // printf("antig: %lld \tatual:%lld \n", tempoAntigo,tempoAtual );
+            diferencaTempo = tempoAtual - tempoAntigo;
+            // printf(" dif t %d\n", diferencaTempo );
+            if(diferencaTempo <= 3000){
+              estado = 4;//Estado 4 (Longo)
+              tempoAntigo = current_timestamp(); //pega o tempo que soltou o botao 
+            }
+            else{
+              estado = 3;//Estado 3 (curto)
+              tempoAntigo = current_timestamp(); //pega o tempo que soltou o botao 
+            }
+          }
+
+          break;
+        case 3:
+          if(switches[0]==0){
+            estado = 0;
+          }
+          frase[indiceFrase++] = '-';
+          contador++;
+          printf("%s\n",frase);
+          while(1){
+            tempoAtual = current_timestamp();
+            diferencaTempo = tempoAtual - tempoAntigo;
+            if(contador>=4){
+              estado = 5;
+              break;
+            }
+            if(diferencaTempo>=5000){ //É o fim de um char
+              estado = 5;
+              break;
+            }
+            else if(botoes[0]==1){ //Continuação de um char
+              estado = 2;
+              tempoAntigo = current_timestamp();
+              break;
+            }
+          }
+          break;
+        case 4:
+          if(switches[0]==0){
+            estado = 0;
+          }
+          frase[indiceFrase++] = '.';
+          contador++;
+          printf("%s\n",frase);
+          while(1){
+            tempoAtual = current_timestamp();
+            diferencaTempo = tempoAtual - tempoAntigo;
+            if(contador>=4){
+              estado = 5;
+              break;
+            }
+            if(diferencaTempo>=5000){ //É o fim de um char
+              estado = 5;
+              break;
+            }
+            else if(botoes[0]==1){ //Continuação de um char
+              estado = 2;
+              tempoAntigo = current_timestamp();
+              break;
+            }
+          }
+          break;
+        case 5:
+          if(switches[0]==0){
+            estado = 0;
+          }
+          frase[indiceFrase++] = ' ';
+          contador = 0;
+          printf("%s\n",frase);
+          while(1){
+            tempoAtual = current_timestamp();
+            diferencaTempo = tempoAtual - tempoAntigo;
+            if(diferencaTempo>=12000){
+              frase[indiceFrase++] = '/';
+              frase[indiceFrase++] = ' ';
+              estado = 1;
+              printf("%s\n",frase);
+              break;
+            }
+            else if(botoes[0]==1){
+              estado = 2;
+              tempoAntigo = current_timestamp();
+              break;
+            }
+          }
           break;
         default:
           break;
       }
-    while(estado == 0){
-      if(switches[0] == 1)
-        estado = 1;
-    }
+    // while(estado == 0){
+    //   if(botoes[0] == 1){
+    //     estado = 1;
+    //     tempoAntigo = current_timestamp();
+    //   }
+    // }
 
-    while(estado == 1){
+    // while(estado == 1){
+    //   if(botoes[0] == 0){
+    //     estado = 0;
+    //     tempoAtual = current_timestamp();
+    //   }
+    // }
 
-    }
-
-    printf("switch %d\n", valorSwitch);
+    // printf("Diferença: \t %lld\n", tempoAtual - tempoAntigo);
+    // printf("switch %ld\n", valorSwitch);
     read(dev, &lixo, INPORT);
     write(dev, &valorSwitch, HEXPORT);
     for(lixo = 0; lixo < 100000000; lixo++){
@@ -122,15 +253,15 @@ void leitura (int dev) {
 
     valorBotao = vButton;
     // Atualizacao Valores dos botoes para boolean
-    printf("Botao :");
+    // printf("Botao :");
     for(m = 0; m < 4; m++){
       botoes[m] = (~vButton & binarios[m] ) / expo(2, m);
     }
-    printf("\n");
-    for(m = 3; m >= 0; m--){
-      printf("%d", botoes[m]);
-    }
-    printf("\n");
+    // printf("\n");
+    // for(m = 3; m >= 0; m--){
+    //   printf("%d", botoes[m]);
+    // }
+    // printf("\n");
 
     for(lixo = 0; lixo < 100000000; lixo++){
 
@@ -141,18 +272,18 @@ void leitura (int dev) {
     read(dev, &vInport, INPORT);
 
     valorSwitch = vInport;
-    printf("Valor switch minha thread %d\n", valorSwitch);
+    // printf("Valor switch minha thread %ld\n", valorSwitch);
     for(m = 0; m < 16; m++){
       if(m >= 8)
         switches[m] = ((vInport >> 8) & binarios[m - 8] ) / expo(2, m % 8);
       else
         switches[m] = (vInport & binarios[m] ) / expo(2, m);
     }
-    printf("Switches\n");
-    for(m = 15; m >= 0; m--){
-      printf("%d", switches[m]);
-    }
-    printf("\n");
+    // printf("Switches\n");
+    // for(m = 15; m >= 0; m--){
+    //   printf("%d", switches[m]);
+    // }
+    // printf("\n");
 
 
           
