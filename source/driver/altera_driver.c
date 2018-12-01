@@ -158,7 +158,7 @@ static int pci_probe(struct pci_dev *dev, const struct pci_device_id *id) {
   button  = ioremap_nocache(resource + 0XC700, 0x20);
   led_g = ioremap_nocache(resource + 0XC060, 0x20);
   led_r = ioremap_nocache(resource + 0XC250, 0x20);
-  // hexdisplay_1 = ioremap_nocache(resource + 0XC040, 0x20);
+  hexdisplay_1 = ioremap_nocache(resource + 0XC040, 0x20);
 
   return 0;
 }
@@ -170,7 +170,7 @@ static void pci_remove(struct pci_dev *dev) {
   iounmap(button);
   iounmap(led_g);
   iounmap(led_r);
-  // iounmap(hexdisplay_1);
+  iounmap(hexdisplay_1);
 }
 
 
