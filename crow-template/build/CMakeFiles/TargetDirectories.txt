@@ -1,0 +1,17 @@
+/home/thiago/Área de Trabalho/crow-template/build/CMakeFiles/rebuild_cache.dir
+/home/thiago/Área de Trabalho/crow-template/build/CMakeFiles/edit_cache.dir
+/home/thiago/Área de Trabalho/crow-template/build/CMakeFiles/amalgamation.dir
+/home/thiago/Área de Trabalho/crow-template/build/CMakeFiles/test.dir
+/home/thiago/Área de Trabalho/crow-template/build/src/CMakeFiles/rebuild_cache.dir
+/home/thiago/Área de Trabalho/crow-template/build/src/CMakeFiles/edit_cache.dir
+/home/thiago/Área de Trabalho/crow-template/build/src/CMakeFiles/example.dir
+/home/thiago/Área de Trabalho/crow-template/build/src/CMakeFiles/test.dir
+/home/thiago/Área de Trabalho/crow-template/build/tests/CMakeFiles/rebuild_cache.dir
+/home/thiago/Área de Trabalho/crow-template/build/tests/CMakeFiles/edit_cache.dir
+/home/thiago/Área de Trabalho/crow-template/build/tests/CMakeFiles/unittest.dir
+/home/thiago/Área de Trabalho/crow-template/build/tests/CMakeFiles/test.dir
+/home/thiago/Área de Trabalho/crow-template/build/tests/template/CMakeFiles/edit_cache.dir
+/home/thiago/Área de Trabalho/crow-template/build/tests/template/CMakeFiles/test.dir
+/home/thiago/Área de Trabalho/crow-template/build/tests/template/CMakeFiles/mustachetest.dir
+/home/thiago/Área de Trabalho/crow-template/build/tests/template/CMakeFiles/rebuild_cache.dir
+/home/thiago/Área de Trabalho/crow-template/build/tests/template/CMakeFiles/template_test_copy.dir

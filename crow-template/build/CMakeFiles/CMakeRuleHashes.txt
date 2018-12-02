@@ -1,0 +1,5 @@
+# Hashes of file build rules.
+55d3c8e044b23deab50fa8b3100e90c4 CMakeFiles/amalgamation
+0159137ea8fe465dc86d6ed7e096f2ed amalgamate/crow_all.h
+27dcd4944086ddb98b98275780c0fc98 tests/template/CMakeFiles/template_test_copy
+da3a9d7a1cccbab0cd9078d461ddaf3d tests/template/test.py
