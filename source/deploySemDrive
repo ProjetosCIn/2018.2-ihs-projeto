@@ -1,1 +1,1 @@
-cd /home/de2i-150/Desktop/laaj/source/driver && make && sudo insmod altera_driver.ko && dmesg && sudo mknod /dev/de2i150_altera c 91 1 && cd ../app && make && sudo ./app
+cd /home/de2i-150/Downloads/laaj/source/driver && make && sudo insmod altera_driver.ko && dmesg && sudo mknod /dev/de2i150_altera c 91 1 && cd ../app && make && sudo ./app
