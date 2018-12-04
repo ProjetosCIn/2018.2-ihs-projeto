@@ -312,24 +312,6 @@ void controleDisplays(int dev){
 }
 
 
-/*
-Para rodar esta coisa na placa, é preciso rodar o comando:
-    lsmod | grep -i spkr
-  caso ele não retorne nada, isto indica que o buzzer não está ativo, então temos que ativalo, para isto, rode, caso contrário, goto 'deu bom':
-    modprobe pcspkr
-  Agora rode o 'lsmod | grep -i spkr' novamente
-  Deu bom:
-  Se tudo deu bom até agora, compile o código
-    gcc beep.c -o beep
-  e rode
-    sudo ./beep
-  este código só deve rodar com sudo, pois a escrita em um dispositivo só é permitida para o superusuário
-  Ps.: Se algu, comando não rodar, coloque um sudo na frente, pois eu não tenho certeza se usei ou não, tenho certeza apenas no ultimo.
-  Ps.: Se mesmo com sudo isto não roda, eu não sei o que fazer
-*/
-
-
-
 void beepBuzzer(int dev){
     int buzz = open("/dev/tty10", O_RDONLY),i = 200,h; 
     if (buzz == -1 ){// não conseguiu acessar o arquivo
